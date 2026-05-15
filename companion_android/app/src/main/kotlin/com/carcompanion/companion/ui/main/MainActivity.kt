@@ -732,6 +732,15 @@ private fun OverlayControls(enabled: Boolean) {
     Text("Floating overlay", style = MaterialTheme.typography.titleSmall)
 
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(
+            enabled = enabled && hasPerm,
+            onClick = { OverlayController.resetPosition(context) },
+        ) { Text("Reset position") }
+    }
+
+    Spacer(Modifier.size(4.dp))
+
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Button(
             enabled = enabled,
             onClick = {

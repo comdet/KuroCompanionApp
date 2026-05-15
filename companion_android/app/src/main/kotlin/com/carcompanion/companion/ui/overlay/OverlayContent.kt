@@ -112,8 +112,13 @@ fun OverlayContent(
                 Text(
                     text = currentVolume.toString(),
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.width(28.dp),
+                    // 38 dp fits "100" on a single line at titleMedium.
+                    // Earlier 28 dp wrapped to two rows on max volume.
+                    modifier = Modifier.width(38.dp),
                     color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    softWrap = false,
+                    textAlign = TextAlign.Center,
                 )
 
                 FilledIconButton(

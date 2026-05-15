@@ -13,8 +13,8 @@ android {
         applicationId = "com.carcompanion.companion"
         minSdk = 31
         targetSdk = 34
-        versionCode = 3
-        versionName = "0.2.1"
+        versionCode = 4
+        versionName = "0.2.2"
 
         // GitHub release coordinates for the assets-pack downloader.
         // - REPO_OWNER / REPO_NAME locate the public release feed

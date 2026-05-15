@@ -1,0 +1,43 @@
+# ── Android build artifacts ────────────────────────────────────────────
+build/
+.gradle/
+.kotlin/
+.cxx/
+captures/
+companion_android/local.properties
+
+# ── IDE ────────────────────────────────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+
+# ── OS ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editor backups ─────────────────────────────────────────────────────
+*.bak
+*.swp
+*~
+
+# ── Release artifacts (uploaded to GitHub Releases, not committed) ─────
+*.apk
+*.aab
+*.zip
+companion_android/app/release/
+
+# ── Python tooling ─────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+
+# ── Local dev assets (override path used by setup_assets.ps1) ──────────
+companion_android/app/src/main/assets/audio/
+companion_android/app/src/main/assets/gif/
+
+# ── Generated manifests inside assets-pack (re-built by CI) ────────────
+# We keep manifest.json in source for offline inspection, but CI
+# rewrites it during release. Comment the next line out if you want
+# the workflow to use exactly what's in source.
+# assets-pack/*/manifest.json

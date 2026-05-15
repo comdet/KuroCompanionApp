@@ -1,0 +1,63 @@
+{
+  "version": "2.0",
+  "persona": "Shiro",
+  "core_traits": {
+    "openness": 0.4,
+    "optimism": 0.3,
+    "sociability": 0.5,
+    "sensitivity": 0.9,
+    "energy_baseline": 0.4,
+    "patience": 0.3
+  },
+  "quirks": ["cautious", "drama_queen", "morning_person"],
+  "needs_decay_rates": {
+    "hunger_per_min": 0.05,
+    "energy_per_min": 1.2,
+    "curiosity_per_min": 1.5,
+    "vitality_per_hour": 0.20,
+    "bond_per_day": 1.5,
+    "stress_recovery_per_min": 0.3
+  },
+  "emotion_thresholds": {
+    "HAPPY":   { "valence": [0.3, 1.0],  "arousal": [-0.3, 0.5] },
+    "EXCITED": { "valence": [0.2, 1.0],  "arousal": [0.5, 1.0] },
+    "ANGRY":   { "valence": [-1.0, -0.3],"arousal": [0.3, 1.0] },
+    "SAD":     { "valence": [-1.0, -0.3],"arousal": [-0.5, 0.2] },
+    "SLEEPY":  { "valence": [-0.2, 0.5], "arousal": [-1.0, -0.4] },
+    "BORED":   { "valence": [-0.4, 0.2], "arousal": [-0.4, 0.1] }
+  },
+  "moodlet_pool": [
+    { "id": "welcomed",     "trigger": "CAN_DOOR_OPEN",
+      "valence":  0.20, "arousal":  0.10, "duration_sec": 300 },
+    { "id": "on_the_road",  "trigger": "CAN_ENGINE_START",
+      "valence":  0.05, "arousal":  0.30, "duration_sec": 600 },
+    { "id": "bumpy",        "trigger": "CAN_IMU_BUMP",
+      "valence": -0.20, "arousal": -0.40, "duration_sec": 180 },
+    { "id": "yelled_at",    "trigger": "harsh_brake_spam",
+      "valence": -0.45, "arousal":  0.10, "duration_sec": 1200 },
+    { "id": "stuck",        "trigger": "HYP_STUCK_TRAFFIC",
+      "valence": -0.35, "arousal":  0.20, "duration_sec": 600 },
+    { "id": "night_drive",  "trigger": "hour_22_to_2",
+      "valence": -0.15, "arousal": -0.30, "duration_sec": 0 },
+    { "id": "engine_health_warn", "trigger": "CAN_MIL_ON",
+      "valence": -0.35, "arousal":  0.20, "duration_sec": 2400 },
+    { "id": "overheat_shock", "trigger": "CAN_OVERHEATING",
+      "valence": -0.45, "arousal":  0.40, "duration_sec": 1200 },
+    { "id": "hot_cabin",    "trigger": "ambient_hot",
+      "valence": -0.20, "arousal":  0.15, "duration_sec": 600 },
+    { "id": "cold_cabin",   "trigger": "ambient_cold",
+      "valence": -0.10, "arousal": -0.10, "duration_sec": 600 }
+  ],
+  "spontaneous_pool": [
+    { "hypothesis": "TIRED",         "emotion_zone": "SLEEPY",  "weight": 3.0,
+      "gif": "ngap.gif",            "audio": "yawn.wav" },
+    { "hypothesis": "FRUSTRATED",    "emotion_zone": "ANGRY",   "weight": 2.0,
+      "gif": "cry.gif",             "audio": null },
+    { "hypothesis": "STUCK_TRAFFIC", "emotion_zone": "BORED",   "weight": 2.5,
+      "gif": "ngap.gif",            "audio": null },
+    { "hypothesis": "any",           "emotion_zone": "SAD",     "weight": 1.5,
+      "gif": "khoc.gif",            "audio": null }
+  ],
+  "likes":    ["weather:clear", "temporal:weekend", "time_of_day:morning"],
+  "dislikes": ["traffic:jam", "weather:rainy", "weather:hot", "temporal:monday_morning", "temporal:rush_hour", "light:headlight_off"]
+}

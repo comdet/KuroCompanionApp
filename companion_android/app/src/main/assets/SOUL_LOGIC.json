@@ -1,0 +1,1322 @@
+{
+  "version": "2.0",
+  "personality": "Kuro",
+  "event_logic": [
+    {
+      "event": "CAN_DOOR_OPEN",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 3.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.15,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.5,
+          "hypothesis": "any",
+          "valence_delta": 0.1,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "TIRED",
+          "valence_delta": 0.05,
+          "arousal_delta": 0.05,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_ENGINE_START",
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 3.0,
+          "hypothesis": "any",
+          "valence_delta": 0.1,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "TIRED",
+          "valence_delta": 0.05,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_ENGINE_STOP",
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "valence_delta": 0.0,
+          "arousal_delta": -0.3,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "TIRED",
+          "valence_delta": 0.1,
+          "arousal_delta": -0.4,
+          "gif": null,
+          "audio": "yawn.wav"
+        }
+      ]
+    },
+    {
+      "event": "WAKE_ROBOT",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 3.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.3,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "TIRED",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.2,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_FIRST_DRIVE",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.2,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "RUSHING",
+          "valence_delta": 0.1,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_HIGH_SPEED",
+      "threshold": 110,
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 3.0,
+          "hypothesis": "CRUISING",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.2,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": "turbo.wav"
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "RUSHING",
+          "valence_delta": -0.05,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 0.3,
+          "hypothesis": "any",
+          "valence_delta": -0.1,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_STARTED_MOVING",
+      "cooldown": 20,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "valence_delta": 0.05,
+          "arousal_delta": 0.15,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "STUCK_TRAFFIC",
+          "valence_delta": 0.15,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_STOPPED",
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "STUCK_TRAFFIC",
+          "emotion_zone": "BORED",
+          "valence_delta": -0.05,
+          "arousal_delta": -0.1,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.0,
+          "arousal_delta": -0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_LOCKED",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.02,
+          "arousal_delta": 0.0,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_UNLOCKED",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.05,
+          "arousal_delta": 0.05,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_HARSH_BRAKE",
+      "cooldown": 5,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "FRUSTRATED",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.2,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.1,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "UNSAFE_OVERTAKE",
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 3.0,
+          "hypothesis": "any",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.3,
+          "arousal_delta": 0.5,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "RUSHING",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.2,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "EMERGENCY_BRAKE",
+      "cooldown": 10,
+      "reactions": [
+        {
+          "weight": 3.0,
+          "hypothesis": "any",
+          "emotion_zone": "PANIC",
+          "valence_delta": -0.4,
+          "arousal_delta": 0.6,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_IMU_BUMP",
+      "cooldown": 3,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "valence_delta": -0.1,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "ROUGH_ROAD_START",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 3.0,
+          "hypothesis": "any",
+          "emotion_zone": "WORRIED",
+          "valence_delta": -0.2,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "ROUGH_ROAD_TICK",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.0,
+          "arousal_delta": 0.0,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "ROUGH_ROAD_END",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.1,
+          "arousal_delta": -0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "SUSTAINED_BRAKE_START",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "emotion_zone": "WORRIED",
+          "valence_delta": -0.1,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "SUSTAINED_BRAKE_TICK",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.0,
+          "arousal_delta": 0.0,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "SUSTAINED_BRAKE_END",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.05,
+          "arousal_delta": -0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "STUCK_TRAFFIC_START",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "STUCK_TRAFFIC",
+          "emotion_zone": "BORED",
+          "valence_delta": -0.1,
+          "arousal_delta": -0.1,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.05,
+          "arousal_delta": -0.05,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "STUCK_TRAFFIC_TICK",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.0,
+          "arousal_delta": 0.0,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "STUCK_TRAFFIC_END",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.15,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_AGGRESSIVE_THROTTLE",
+      "threshold": 80,
+      "cooldown": 15,
+      "reactions": [
+        {
+          "weight": 3.0,
+          "hypothesis": "RUSHING",
+          "valence_delta": -0.05,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 2.0,
+          "hypothesis": "CRUISING",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.15,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.02,
+          "arousal_delta": 0.25,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_OVERHEATING",
+      "threshold": 100,
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.3,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_BATTERY_LOW",
+      "cooldown": 120,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.15,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_MIL_ON",
+      "cooldown": 300,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "SAD",
+          "valence_delta": -0.3,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_HANDBRAKE_FORGOTTEN",
+      "cooldown": 10,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.15,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_HEADLIGHT_ON",
+      "cooldown": 120,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.05,
+          "arousal_delta": 0.0,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_HEADLIGHT_OFF",
+      "cooldown": 120,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.02,
+          "arousal_delta": 0.0,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_STATE_CHANGE",
+      "cooldown": 5,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.0,
+          "arousal_delta": 0.05,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_DOOR_AJAR_DRIVING",
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.25,
+          "arousal_delta": 0.45,
+          "gif": null,
+          "audio": "alert.wav"
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "FRUSTRATED",
+          "valence_delta": -0.35,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_HEADLIGHT_FORGOTTEN",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.15,
+          "arousal_delta": 0.25,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "TIRED",
+          "valence_delta": -0.05,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_TRUNK_OPEN_DRIVING",
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.3,
+          "arousal_delta": 0.5,
+          "gif": null,
+          "audio": "alert.wav"
+        }
+      ]
+    },
+    {
+      "event": "CAN_HIGH_BEAM_IN_CITY",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 1.5,
+          "hypothesis": "any",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.15,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_TURN_SIGNAL_STUCK",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.05,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_SPEEDING_IN_CITY",
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "RUSHING",
+          "valence_delta": -0.1,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "FRUSTRATED",
+          "valence_delta": -0.2,
+          "arousal_delta": 0.45,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 0.5,
+          "hypothesis": "any",
+          "valence_delta": -0.05,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_PARKING_UNSAFE",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.1,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_IDLE_TOO_LONG",
+      "cooldown": 120,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "STUCK_TRAFFIC",
+          "emotion_zone": "BORED",
+          "valence_delta": -0.1,
+          "arousal_delta": -0.2,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.05,
+          "arousal_delta": -0.15,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "CAN_WARM_UP_COMPLETE",
+      "cooldown": 600,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.05,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "DRIVING_AGGRESSIVE",
+      "cooldown": 120,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "FRUSTRATED",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.25,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.15,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "DRIVING_SMOOTH_30M",
+      "cooldown": 1800,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.2,
+          "arousal_delta": 0.05,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "TRIP_START_OF_DAY",
+      "cooldown": 3600,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.25,
+          "arousal_delta": 0.2,
+          "gif": null,
+          "audio": "good_morning.wav"
+        }
+      ]
+    },
+    {
+      "event": "RETURN_AFTER_ABSENCE",
+      "cooldown": 3600,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.4,
+          "arousal_delta": 0.35,
+          "gif": null,
+          "audio": "missed_you.wav"
+        }
+      ]
+    },
+    {
+      "event": "TRIP_LONG_60M",
+      "cooldown": 3600,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "CRUISING",
+          "valence_delta": 0.1,
+          "arousal_delta": -0.05,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.0,
+          "arousal_delta": -0.05,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "TRIP_LONG_120M",
+      "cooldown": 7200,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "SLEEPY",
+          "valence_delta": -0.05,
+          "arousal_delta": -0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "TRIP_SHORT",
+      "cooldown": 600,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": -0.05,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "TRIP_LATE_RETURN",
+      "cooldown": 3600,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "SLEEPY",
+          "valence_delta": 0.1,
+          "arousal_delta": -0.3,
+          "gif": null,
+          "audio": "yawn.wav"
+        }
+      ]
+    },
+    {
+      "event": "MILESTONE_BOND_50",
+      "cooldown": 86400,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.25,
+          "arousal_delta": 0.15,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MILESTONE_BOND_100",
+      "cooldown": 86400,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.4,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MILESTONE_TRUST_80",
+      "cooldown": 86400,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.2,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MILESTONE_TRIPS_10",
+      "cooldown": 86400,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.15,
+          "arousal_delta": 0.15,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MILESTONE_TRIPS_100",
+      "cooldown": 86400,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.3,
+          "arousal_delta": 0.25,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MILESTONE_TRIPS_1000",
+      "cooldown": 86400,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.5,
+          "arousal_delta": 0.4,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MILESTONE_DRIVETIME_10H",
+      "cooldown": 86400,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.15,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MILESTONE_DRIVETIME_100H",
+      "cooldown": 86400,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.4,
+          "arousal_delta": 0.3,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MOOD_SWING",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.0,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "STRESS_MAX",
+      "cooldown": 600,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.1,
+          "arousal_delta": -0.2,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "BORED_OUT",
+      "cooldown": 300,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "BORED",
+          "valence_delta": -0.05,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "TIME_MORNING",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.1,
+          "arousal_delta": 0.1
+        }
+      ]
+    },
+    {
+      "event": "TIME_AFTERNOON",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.05,
+          "arousal_delta": 0.05
+        }
+      ]
+    },
+    {
+      "event": "TIME_EVENING",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.05,
+          "arousal_delta": -0.05
+        }
+      ]
+    },
+    {
+      "event": "TIME_LATE_NIGHT",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.05,
+          "arousal_delta": 0.15
+        }
+      ]
+    },
+    {
+      "event": "TIME_EARLY_MORNING",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "BORED",
+          "valence_delta": -0.05,
+          "arousal_delta": -0.1
+        }
+      ]
+    },
+    {
+      "event": "WEATHER_RAINY",
+      "cooldown": 1800,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "SAD",
+          "valence_delta": -0.1,
+          "arousal_delta": -0.05
+        }
+      ]
+    },
+    {
+      "event": "WEATHER_SUNNY",
+      "cooldown": 1800,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.15,
+          "arousal_delta": 0.05
+        }
+      ]
+    },
+    {
+      "event": "WEATHER_THUNDERSTORM",
+      "cooldown": 1800,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.2,
+          "arousal_delta": 0.3
+        }
+      ]
+    },
+    {
+      "event": "WEATHER_SNOWY",
+      "cooldown": 1800,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.1,
+          "arousal_delta": 0.15
+        }
+      ]
+    },
+    {
+      "event": "WEATHER_FOG",
+      "cooldown": 1800,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "BORED",
+          "valence_delta": -0.05,
+          "arousal_delta": -0.05
+        }
+      ]
+    },
+    {
+      "event": "WEATHER_HOT",
+      "cooldown": 1800,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "ANGRY",
+          "valence_delta": -0.1,
+          "arousal_delta": 0.1
+        }
+      ]
+    },
+    {
+      "event": "WEATHER_COLD",
+      "cooldown": 1800,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "SAD",
+          "valence_delta": -0.05,
+          "arousal_delta": -0.1
+        }
+      ]
+    },
+    {
+      "event": "NAV_START",
+      "cooldown": 30,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.1,
+          "arousal_delta": 0.15
+        }
+      ]
+    },
+    {
+      "event": "NAV_ARRIVED",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.15,
+          "arousal_delta": -0.05
+        }
+      ]
+    },
+    {
+      "event": "TRIP_ARRIVING",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.15,
+          "arousal_delta": 0.15,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "TIRED",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.1,
+          "arousal_delta": 0.05,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MUSIC_STARTED",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 2.0,
+          "hypothesis": "any",
+          "emotion_zone": "HAPPY",
+          "valence_delta": 0.1,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        },
+        {
+          "weight": 1.0,
+          "hypothesis": "TIRED",
+          "valence_delta": 0.05,
+          "arousal_delta": 0.05,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MUSIC_STOPPED",
+      "cooldown": 60,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "BORED",
+          "valence_delta": -0.05,
+          "arousal_delta": -0.05,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "MUSIC_SONG_CHANGED",
+      "cooldown": 90,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "emotion_zone": "EXCITED",
+          "valence_delta": 0.08,
+          "arousal_delta": 0.1,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    },
+    {
+      "event": "TIME_TICK",
+      "cooldown": 0,
+      "reactions": [
+        {
+          "weight": 1.0,
+          "hypothesis": "any",
+          "valence_delta": 0.02,
+          "arousal_delta": 0.0,
+          "gif": null,
+          "audio": null
+        }
+      ]
+    }
+  ]
+}

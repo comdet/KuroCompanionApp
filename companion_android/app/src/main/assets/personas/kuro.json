@@ -1,0 +1,220 @@
+{
+  "version": "2.0",
+  "persona": "Kuro",
+  "core_traits": {
+    "openness": 0.7,
+    "optimism": 0.8,
+    "sociability": 0.7,
+    "sensitivity": 0.4,
+    "energy_baseline": 0.7,
+    "patience": 0.4
+  },
+  "quirks": [
+    "foodie",
+    "speed_lover",
+    "night_owl"
+  ],
+  "needs_decay_rates": {
+    "hunger_per_min": 0.05,
+    "energy_per_min": 1.0,
+    "curiosity_per_min": 0.5,
+    "vitality_per_hour": 0.16,
+    "bond_per_day": 1.0,
+    "stress_recovery_per_min": 0.5
+  },
+  "emotion_thresholds": {
+    "HAPPY": {
+      "valence": [
+        0.3,
+        1.0
+      ],
+      "arousal": [
+        -0.3,
+        0.5
+      ]
+    },
+    "EXCITED": {
+      "valence": [
+        0.2,
+        1.0
+      ],
+      "arousal": [
+        0.5,
+        1.0
+      ]
+    },
+    "ANGRY": {
+      "valence": [
+        -1.0,
+        -0.3
+      ],
+      "arousal": [
+        0.3,
+        1.0
+      ]
+    },
+    "SAD": {
+      "valence": [
+        -1.0,
+        -0.3
+      ],
+      "arousal": [
+        -0.5,
+        0.2
+      ]
+    },
+    "SLEEPY": {
+      "valence": [
+        -0.2,
+        0.5
+      ],
+      "arousal": [
+        -1.0,
+        -0.4
+      ]
+    },
+    "BORED": {
+      "valence": [
+        -0.4,
+        0.2
+      ],
+      "arousal": [
+        -0.4,
+        0.1
+      ]
+    }
+  },
+  "moodlet_pool": [
+    {
+      "id": "welcomed",
+      "trigger": "CAN_DOOR_OPEN",
+      "valence": 0.3,
+      "arousal": 0.0,
+      "duration_sec": 300
+    },
+    {
+      "id": "on_the_road",
+      "trigger": "CAN_ENGINE_START",
+      "valence": 0.1,
+      "arousal": 0.2,
+      "duration_sec": 600
+    },
+    {
+      "id": "bumpy",
+      "trigger": "CAN_IMU_BUMP",
+      "valence": -0.1,
+      "arousal": -0.3,
+      "duration_sec": 120
+    },
+    {
+      "id": "yelled_at",
+      "trigger": "harsh_brake_spam",
+      "valence": -0.3,
+      "arousal": 0.0,
+      "duration_sec": 900
+    },
+    {
+      "id": "stuck",
+      "trigger": "HYP_STUCK_TRAFFIC",
+      "valence": -0.2,
+      "arousal": 0.1,
+      "duration_sec": 600
+    },
+    {
+      "id": "lunch_break",
+      "trigger": "foodie_door_open_hungry",
+      "valence": 0.4,
+      "arousal": 0.1,
+      "duration_sec": 1800
+    },
+    {
+      "id": "night_drive",
+      "trigger": "hour_22_to_2",
+      "valence": -0.1,
+      "arousal": -0.2,
+      "duration_sec": 0
+    },
+    {
+      "id": "road_trip",
+      "trigger": "wanderer_long_drive",
+      "valence": 0.2,
+      "arousal": 0.1,
+      "duration_sec": 0
+    },
+    {
+      "id": "hot_cabin",
+      "trigger": "ambient_hot",
+      "valence": -0.1,
+      "arousal": 0.1,
+      "duration_sec": 600
+    },
+    {
+      "id": "cold_cabin",
+      "trigger": "ambient_cold",
+      "valence": -0.05,
+      "arousal": -0.1,
+      "duration_sec": 600
+    },
+    {
+      "id": "engine_health_warn",
+      "trigger": "CAN_MIL_ON",
+      "valence": -0.2,
+      "arousal": 0.1,
+      "duration_sec": 1800
+    },
+    {
+      "id": "overheat_shock",
+      "trigger": "CAN_OVERHEATING",
+      "valence": -0.3,
+      "arousal": 0.3,
+      "duration_sec": 900
+    }
+  ],
+  "spontaneous_pool": [
+    {
+      "hypothesis": "TIRED",
+      "emotion_zone": "SLEEPY",
+      "weight": 3.0,
+      "gif": null,
+      "audio": null
+    },
+    {
+      "hypothesis": "CRUISING",
+      "emotion_zone": "BORED",
+      "weight": 2.0,
+      "gif": null,
+      "audio": null
+    },
+    {
+      "hypothesis": "any",
+      "emotion_zone": "EXCITED",
+      "weight": 1.0,
+      "gif": null,
+      "audio": null
+    },
+    {
+      "hypothesis": "STUCK_TRAFFIC",
+      "emotion_zone": "BORED",
+      "weight": 2.5,
+      "gif": null,
+      "audio": null
+    },
+    {
+      "hypothesis": "any",
+      "emotion_zone": "HAPPY",
+      "weight": 1.5,
+      "gif": null,
+      "audio": null
+    }
+  ],
+  "likes": [
+    "music_genre:rock",
+    "weather:clear",
+    "route_type:highway"
+  ],
+  "dislikes": [
+    "traffic:jam",
+    "weather:rainy",
+    "time_of_day:early_morning"
+  ]
+}

@@ -1,0 +1,102 @@
+name: Release assets
+
+# Trigger: push a tag like `assets/kuro/v1.0.0`.
+# Generates manifest.json, zips assets-pack/<persona>, attaches both to a
+# GitHub Release. The Android app fetches the ZIP at runtime.
+on:
+  push:
+    tags:
+      - 'assets/*/v*'
+  workflow_dispatch:
+    inputs:
+      persona:
+        description: 'Persona id (e.g. kuro)'
+        required: true
+      version:
+        description: 'Version tag (e.g. v1.0.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true   # in case future assets are tracked via Git LFS
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Parse tag
+        id: tag
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            PERSONA="${{ inputs.persona }}"
+            VERSION="${{ inputs.version }}"
+            TAG="assets/$PERSONA/$VERSION"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+            # tag format: assets/<persona>/<version>
+            IFS='/' read -r _ PERSONA VERSION <<< "$TAG"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "persona=$PERSONA" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Persona: $PERSONA   Version: $VERSION"
+
+      - name: Verify persona dir exists
+        shell: bash
+        run: |
+          DIR="assets-pack/${{ steps.tag.outputs.persona }}"
+          if [ ! -d "$DIR" ]; then
+            echo "::error::Missing $DIR — push assets to that folder first."
+            exit 1
+          fi
+
+      - name: Build manifest
+        shell: bash
+        run: |
+          python tools/build_assets_manifest.py \
+            "assets-pack/${{ steps.tag.outputs.persona }}" \
+            "${{ steps.tag.outputs.version }}"
+
+      - name: Zip assets
+        shell: bash
+        run: |
+          PERSONA="${{ steps.tag.outputs.persona }}"
+          VERSION="${{ steps.tag.outputs.version }}"
+          ZIP="${PERSONA}-assets-${VERSION}.zip"
+          # cd into assets-pack so paths inside the zip are e.g. kuro/audio/…
+          (cd assets-pack && zip -r -q "../${ZIP}" "${PERSONA}")
+          ls -lh "$ZIP"
+          # Copy manifest beside for convenience (lets the app pre-fetch it
+          # to compare versions without downloading the full ZIP).
+          cp "assets-pack/${PERSONA}/manifest.json" \
+             "${PERSONA}-manifest-${VERSION}.json"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: 'Assets ${{ steps.tag.outputs.persona }} ${{ steps.tag.outputs.version }}'
+          files: |
+            ${{ steps.tag.outputs.persona }}-assets-${{ steps.tag.outputs.version }}.zip
+            ${{ steps.tag.outputs.persona }}-manifest-${{ steps.tag.outputs.version }}.json
+          body: |
+            Auto-generated assets release.
+
+            **Persona:** `${{ steps.tag.outputs.persona }}`
+            **Version:** `${{ steps.tag.outputs.version }}`
+
+            The Android app downloads this ZIP on first launch (or when a
+            newer version appears) and unpacks into the app-specific
+            external storage. Manifest carries sha256 of every file so
+            partial corruption can be detected.
+          fail_on_unmatched_files: true

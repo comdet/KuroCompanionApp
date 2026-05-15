@@ -1,0 +1,27 @@
+{
+  "navigation_events": [
+    {
+      "instruction": "TURN_LEFT",
+      "trigger_distance_m": 300,
+      "esp32_action": "GAZE_LEFT",
+      "led_action": "BLINK_LEFT"
+    },
+    {
+      "instruction": "TURN_RIGHT",
+      "trigger_distance_m": 300,
+      "esp32_action": "GAZE_RIGHT",
+      "led_action": "BLINK_RIGHT"
+    },
+    {
+      "instruction": "ARRIVED",
+      "trigger_distance_m": 0,
+      "esp32_action": "HAPPY_DANCE",
+      "led_action": "WELCOME_TEXT"
+    },
+    {
+      "traffic_status": "HEAVY",
+      "esp32_action": "BORED_YAWN",
+      "led_action": "SAD_FACE"
+    }
+  ]
+}

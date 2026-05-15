@@ -1,0 +1,36 @@
+{
+  "project": "CarCompanion",
+  "version": "1.0",
+  "events": [
+    {
+      "id": 1,
+      "category": "SYSTEM",
+      "description": "Startup/Shutdown sequence",
+      "default_gif": "happy_2.gif"
+    },
+    {
+      "id": 2,
+      "category": "BODY",
+      "description": "Door, Trunk, Hood status",
+      "default_gif": "ngac_nhien.gif"
+    },
+    {
+      "id": 3,
+      "category": "PERFORMANCE",
+      "description": "RPM, Speed, Acceleration",
+      "default_gif": "speed_ex.gif"
+    },
+    {
+      "id": 4,
+      "category": "SAFETY",
+      "description": "TPMS, Temperature, Braking",
+      "default_gif": "cry.gif"
+    },
+    {
+      "id": 5,
+      "category": "AMBIENT",
+      "description": "Time, Weather, Mood",
+      "default_gif": "love.gif"
+    }
+  ]
+}

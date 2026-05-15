@@ -1,0 +1,92 @@
+name: Release APK
+
+# Trigger: push a tag like `app/v0.2.0`.
+# The release page will get app-debug + app-release APKs attached.
+on:
+  push:
+    tags:
+      - 'app/v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag (e.g. v0.2.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Determine version
+        id: ver
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/app/}"
+          fi
+          # Strip leading "v" if present, but keep it for the filename
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Building app version: $TAG"
+
+      - name: Build APKs
+        working-directory: companion_android
+        run: gradle assembleDebug assembleRelease
+
+      - name: Sign release APK
+        id: sign
+        # Skip signing if no keystore secret — release APK will stay unsigned.
+        if: ${{ env.RELEASE_KEYSTORE_BASE64 != '' }}
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: companion_android/app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          alias: ${{ secrets.RELEASE_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        # Action sets $signedReleaseFile.
+
+      - name: Stage artifacts
+        shell: bash
+        run: |
+          mkdir -p out
+          TAG="${{ steps.ver.outputs.tag }}"
+          cp companion_android/app/build/outputs/apk/debug/app-debug.apk \
+             "out/CarCompanion-debug-${TAG}.apk"
+          # If signing ran, use the signed APK; otherwise grab the unsigned.
+          if [ -n "${{ steps.sign.outputs.signedReleaseFile }}" ]; then
+            cp "${{ steps.sign.outputs.signedReleaseFile }}" \
+               "out/CarCompanion-release-${TAG}.apk"
+          else
+            cp companion_android/app/build/outputs/apk/release/app-release-unsigned.apk \
+               "out/CarCompanion-release-unsigned-${TAG}.apk"
+          fi
+          ls -lh out/
+
+      - name: Create / update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: 'App ${{ steps.ver.outputs.tag }}'
+          files: out/*.apk
+          generate_release_notes: true
+          fail_on_unmatched_files: true

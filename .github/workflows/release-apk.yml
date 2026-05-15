@@ -50,12 +50,21 @@ jobs:
         working-directory: companion_android
         run: gradle assembleDebug assembleRelease
 
+      - name: Check signing secret
+        id: check_sign
+        shell: bash
+        env:
+          KS: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KS" ]; then
+            echo "has_keystore=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_keystore=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Sign release APK
         id: sign
-        # Skip signing if no keystore secret — release APK will stay unsigned.
-        if: ${{ env.RELEASE_KEYSTORE_BASE64 != '' }}
-        env:
-          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+        if: steps.check_sign.outputs.has_keystore == 'true'
         uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: companion_android/app/build/outputs/apk/release
@@ -63,7 +72,7 @@ jobs:
           alias: ${{ secrets.RELEASE_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.RELEASE_KEY_PASSWORD }}
-        # Action sets $signedReleaseFile.
+        # Action sets `signedReleaseFile` output (path to signed APK).
 
       - name: Stage artifacts
         shell: bash

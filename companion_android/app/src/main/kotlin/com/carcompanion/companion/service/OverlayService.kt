@@ -4,11 +4,9 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
-import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import android.view.Gravity
-import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.Lifecycle
@@ -168,37 +166,37 @@ class OverlayService : Service() {
     }
 
     /**
-     * Clamp [x] / [y] so the overlay stays inside the visible screen
-     * minus the system bar insets. The view's own dimensions are
-     * approximated by a rough default (300×60 dp) because at first
-     * createOverlay call the view hasn't been measured yet — once
-     * laid out the actual width/height refines the bound.
+     * Clamp [x] / [y] so the overlay stays mostly on-screen. Two prior
+     * iterations went too far in opposite directions:
+     *
+     *   1. **No clamp** — user dragged overlay behind status bar and
+     *      lost the ability to tap it.
+     *   2. **Insets-based safe band** — used `WindowInsets.systemBars()`
+     *      to forbid the status-bar / nav-bar regions. Worked on phone
+     *      but on FYT7870 HUD the reported `insets.top` was big enough
+     *      to forbid every upward drag, so the overlay felt frozen.
+     *
+     * Current rule: clamp to the **display bounds** (current orientation)
+     * minus the view's own size. The overlay can sit flush against any
+     * edge — including under a system bar — but it can't disappear off
+     * the screen entirely. The dedicated "Reset position" button in
+     * HomeScreen is the recovery path if the user covers it with
+     * something.
      */
     private fun clampToSafeBand(x: Int, y: Int): Pair<Int, Int> {
-        val wm = windowManager
         val density = resources.displayMetrics.density
         val approxW = (DEFAULT_W_DP * density).toInt()
         val approxH = (DEFAULT_H_DP * density).toInt()
         val viewW = view?.width?.takeIf { it > 0 } ?: approxW
         val viewH = view?.height?.takeIf { it > 0 } ?: approxH
 
-        // Display bounds + insets (statusbar / navbar). Both APIs need
-        // API 30+; minSdk = 31 so safe to call directly.
-        val metrics = wm.maximumWindowMetrics
-        val bounds = metrics.bounds
-        val insets = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            metrics.windowInsets.getInsets(WindowInsets.Type.systemBars())
-        } else null
-        val safeTop    = insets?.top    ?: 60
-        val safeBottom = insets?.bottom ?: 0
-        val safeLeft   = insets?.left   ?: 0
-        val safeRight  = insets?.right  ?: 0
-
-        val minX = safeLeft
-        val minY = safeTop
-        val maxX = (bounds.width()  - safeRight  - viewW).coerceAtLeast(minX)
-        val maxY = (bounds.height() - safeBottom - viewH).coerceAtLeast(minY)
-        return x.coerceIn(minX, maxX) to y.coerceIn(minY, maxY)
+        // currentWindowMetrics matches the active orientation (landscape on
+        // the HUD, portrait on the phone) — maximumWindowMetrics returns
+        // the largest possible, which over-estimates on landscape devices.
+        val bounds = windowManager.currentWindowMetrics.bounds
+        val maxX = (bounds.width()  - viewW).coerceAtLeast(0)
+        val maxY = (bounds.height() - viewH).coerceAtLeast(0)
+        return x.coerceIn(0, maxX) to y.coerceIn(0, maxY)
     }
 
     /**

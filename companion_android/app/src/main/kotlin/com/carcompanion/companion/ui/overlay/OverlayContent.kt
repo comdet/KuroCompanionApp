@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.carcompanion.companion.network.ObdConnection
 import com.carcompanion.companion.service.CarCompanionService
 import com.carcompanion.companion.ui.theme.CompanionTheme
 
@@ -55,11 +56,24 @@ import com.carcompanion.companion.ui.theme.CompanionTheme
  *
  * Mood emoji is driven by the soul engine's current emotion zone.
  */
+/**
+ * Composite readiness signal shown as a tiny coloured dot in the
+ * overlay. Drives glance-level "is everything connected?" feedback —
+ * details are still on the Soul Debug screen.
+ *
+ *   ALL_OK   green   — robot CCP responding AND OBD bridge attached
+ *   PARTIAL  amber   — one of the two is up, the other isn't
+ *   OFFLINE  red     — neither is up (service just started, no OBD,
+ *                      robot unreachable, …)
+ */
+enum class SystemStatus { ALL_OK, PARTIAL, OFFLINE }
+
 @Composable
 fun OverlayContent(
     moodEmoji: String,
     currentVolume: Int,
     muted: Boolean,
+    systemStatus: SystemStatus,
     onVolumeDown: () -> Unit,
     onVolumeUp: () -> Unit,
     onMuteToggle: () -> Unit,
@@ -80,6 +94,18 @@ fun OverlayContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
+                // Status dot — glance-level "is the stack alive?".
+                // Sits next to the mood emoji so it shares the drag area
+                // visually without interfering with drag pointer routing.
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .background(
+                            color = systemStatus.tint(),
+                            shape = CircleShape,
+                        ),
+                )
+
                 // Drag handle: capture pointer drags here and forward the
                 // raw pixel delta to OverlayService → WindowManager. We use
                 // pointerInput on Compose side (not setOnTouchListener on the
@@ -209,10 +235,18 @@ fun OverlayContentLive(
 ) {
     val volume by CarCompanionService.overlayVolume.collectAsState()
     val mood by CarCompanionService.overlayMood.collectAsState()
+    val robotOnline by CarCompanionService.robotOnline.collectAsState()
+    val obdConn by CarCompanionService.obdConnection.collectAsState()
+    val status = when {
+        robotOnline && obdConn == ObdConnection.CLIENT_CONNECTED -> SystemStatus.ALL_OK
+        robotOnline || obdConn == ObdConnection.CLIENT_CONNECTED -> SystemStatus.PARTIAL
+        else -> SystemStatus.OFFLINE
+    }
     OverlayContent(
         moodEmoji = mood,
         currentVolume = volume,
         muted = volume == 0,
+        systemStatus = status,
         onVolumeDown = onVolumeDown,
         onVolumeUp = onVolumeUp,
         onMuteToggle = onMuteToggle,
@@ -220,4 +254,10 @@ fun OverlayContentLive(
         onClose = onClose,
         onDrag = onDrag,
     )
+}
+
+private fun SystemStatus.tint(): Color = when (this) {
+    SystemStatus.ALL_OK  -> Color(0xFF4CAF50)   // material green 500
+    SystemStatus.PARTIAL -> Color(0xFFFFB300)   // amber 600
+    SystemStatus.OFFLINE -> Color(0xFFE53935)   // red 600
 }

@@ -77,6 +77,12 @@ private fun SoulDebugScreen(modifier: Modifier = Modifier) {
                     "${hypothesis.emoji} ${hypothesis.label}",
                     style = MaterialTheme.typography.bodyMedium,
                 )
+                Text(
+                    "v${com.carcompanion.companion.BuildConfig.VERSION_NAME}" +
+                        " · build ${com.carcompanion.companion.BuildConfig.VERSION_CODE}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             QuirkChips(quirks)
         }

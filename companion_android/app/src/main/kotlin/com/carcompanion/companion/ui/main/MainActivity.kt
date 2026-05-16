@@ -318,12 +318,19 @@ private fun ServicePanel(
 
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(
-                "CarCompanion",
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                modifier = Modifier.weight(1f),
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "CarCompanion",
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                )
+                Text(
+                    "v${com.carcompanion.companion.BuildConfig.VERSION_NAME}" +
+                        " (${com.carcompanion.companion.BuildConfig.VERSION_CODE})",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             OutlinedButton(onClick = {
                 context.startActivity(Intent(context, SoulDebugActivity::class.java))
             }) { Text("Soul") }

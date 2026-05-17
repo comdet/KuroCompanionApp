@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.media.AudioManager
+import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
@@ -312,67 +313,45 @@ class CarCompanionService : LifecycleService() {
         }
 
         /**
-         * Step the Android media stream one notch (RAISE / LOWER). Shows the
-         * stock system volume slider via FLAG_SHOW_UI and never touches CCP.
+         * Step volume one notch.
+         *
+         * Why not `adjustStreamVolume(STREAM_MUSIC, ADJUST_RAISE)`? On Chinese
+         * head-unit ROMs (SYU / XYAuto / FYT class, identified by the
+         * presence of `com.syu.ms`), STREAM_MUSIC is force-held at max
+         * because the actual amp lives outside Android — ROM listens for
+         * `KEYCODE_VOLUME_UP/DOWN/MUTE` at the InputDispatcher level and
+         * forwards them to the amp module. `adjustStreamVolume` never gets
+         * there because the stream is already at max.
+         *
+         * `dispatchMediaKeyEvent` is the public-API equivalent that re-enters
+         * the same system path as `adb shell input keyevent` (verified on
+         * the target HUD — amp value 5 → 8 on three consecutive `VOLUME_UP`
+         * dispatches), so it works on the SYU ROM AND falls back to normal
+         * stream-volume behaviour on stock Android.
          */
         fun bumpVolume(delta: Int) {
             val am = audioManagerRef ?: return
-            val direction = if (delta >= 0)
-                AudioManager.ADJUST_RAISE
-            else
-                AudioManager.ADJUST_LOWER
-            am.adjustStreamVolume(
-                AudioManager.STREAM_MUSIC,
-                direction,
-                AudioManager.FLAG_SHOW_UI,
-            )
+            val keycode = if (delta >= 0) KeyEvent.KEYCODE_VOLUME_UP
+                          else KeyEvent.KEYCODE_VOLUME_DOWN
+            am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, keycode))
+            am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, keycode))
             refreshOverlayFromStream()
         }
 
-        // Mute support — restores to the Android stream level captured at
-        // the moment the user pressed mute. We pick up changes the user made
-        // through the system slider while muted (refreshed by restoreVolume).
-        @Volatile private var lastAudibleStreamLevel: Int = -1
-
-        /** Mute the Android media stream. Robot CCP volume untouched. */
-        fun muteVolume() {
-            val am = audioManagerRef ?: return
-            val cur = am.getStreamVolume(AudioManager.STREAM_MUSIC)
-            if (cur > 0) lastAudibleStreamLevel = cur
-            am.adjustStreamVolume(
-                AudioManager.STREAM_MUSIC,
-                AudioManager.ADJUST_MUTE,
-                AudioManager.FLAG_SHOW_UI,
-            )
-            refreshOverlayFromStream()
-        }
-
-        /** Unmute the Android media stream. */
-        fun restoreVolume() {
-            val am = audioManagerRef ?: return
-            am.adjustStreamVolume(
-                AudioManager.STREAM_MUSIC,
-                AudioManager.ADJUST_UNMUTE,
-                AudioManager.FLAG_SHOW_UI,
-            )
-            refreshOverlayFromStream()
-            // If unmute landed us at 0 (some ROMs), bump back to last audible.
-            if (_overlayVolume.value == 0 && lastAudibleStreamLevel > 0) {
-                val max = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC).coerceAtLeast(1)
-                runCatching {
-                    am.setStreamVolume(
-                        AudioManager.STREAM_MUSIC,
-                        lastAudibleStreamLevel.coerceIn(0, max),
-                        AudioManager.FLAG_SHOW_UI,
-                    )
-                }
-                refreshOverlayFromStream()
-            }
-        }
-
-        /** Smart toggle wired to the overlay button. */
+        /**
+         * Toggle mute. Same reasoning as [bumpVolume] — on SYU ROMs the
+         * amp module is what mutes; on stock Android the system handles
+         * KEYCODE_VOLUME_MUTE the conventional way.
+         */
         fun toggleMute() {
-            if (_overlayVolume.value == 0) restoreVolume() else muteVolume()
+            val am = audioManagerRef ?: return
+            am.dispatchMediaKeyEvent(
+                KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE)
+            )
+            am.dispatchMediaKeyEvent(
+                KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_VOLUME_MUTE)
+            )
+            refreshOverlayFromStream()
         }
 
         fun pingRobotAsync() {

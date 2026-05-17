@@ -125,6 +125,14 @@ fun OverlayContent(
                         },
                 )
 
+                // Volume +/- buttons. We deliberately do NOT show an absolute
+                // % value here — on Chinese head-unit ROMs (SYU/XYAuto class)
+                // the amp lives outside Android and Android's STREAM_MUSIC is
+                // forced to max, so getStreamVolume isn't the ground truth.
+                // The buttons dispatch KEYCODE_VOLUME_UP/DOWN via
+                // AudioManager.dispatchMediaKeyEvent — ROM intercepts and
+                // moves the real amp; on stock Android it adjusts STREAM_MUSIC
+                // the usual way.
                 FilledIconButton(
                     onClick = onVolumeDown,
                     colors = IconButtonDefaults.filledIconButtonColors(
@@ -134,18 +142,6 @@ fun OverlayContent(
                 ) {
                     Icon(Icons.AutoMirrored.Filled.VolumeDown, contentDescription = "vol down")
                 }
-
-                Text(
-                    text = currentVolume.toString(),
-                    style = MaterialTheme.typography.titleMedium,
-                    // 38 dp fits "100" on a single line at titleMedium.
-                    // Earlier 28 dp wrapped to two rows on max volume.
-                    modifier = Modifier.width(38.dp),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    softWrap = false,
-                    textAlign = TextAlign.Center,
-                )
 
                 FilledIconButton(
                     onClick = onVolumeUp,

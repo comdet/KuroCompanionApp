@@ -22,7 +22,7 @@
         android:icon="@android:drawable/ic_menu_compass"
         android:supportsRtl="true"
         android:theme="@style/Theme.CompanionAndroid"
-        tools:targetApi="34">
+        tools:targetApi="36">
 
         <activity
             android:name=".ui.main.MainActivity"

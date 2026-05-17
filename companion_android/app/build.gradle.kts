@@ -7,12 +7,13 @@ plugins {
 
 android {
     namespace = "com.carcompanion.companion"
-    compileSdk = 34
+    compileSdk = 36
+    buildToolsVersion = "36.1.0"
 
     defaultConfig {
         applicationId = "com.carcompanion.companion"
         minSdk = 31
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 5
         versionName = "0.2.3"
 
@@ -40,7 +41,10 @@ android {
     }
 
     kotlin {
-        jvmToolchain(17)
+        jvmToolchain(21)
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
     buildFeatures {

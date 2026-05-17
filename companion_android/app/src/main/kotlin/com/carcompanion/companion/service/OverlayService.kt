@@ -80,8 +80,18 @@ class OverlayService : Service() {
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            // FLAG_LAYOUT_IN_SCREEN asks the WindowManager to lay us out
+            // against the full display rect (ignoring decor like the
+            // status bar). Combined with FLAG_LAYOUT_NO_LIMITS, the
+            // overlay can be positioned at y=0 (display top edge).
+            // Note: the status bar still renders ON TOP of any pixels
+            // beneath it for third-party APPLICATION_OVERLAY — that's a
+            // Google-imposed security limit that no flag can lift. The
+            // upper strip of the overlay will visually appear under the
+            // status bar; the rest stays touchable.
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT,
         ).apply {
             gravity = Gravity.TOP or Gravity.START
@@ -166,22 +176,26 @@ class OverlayService : Service() {
     }
 
     /**
-     * Clamp [x] / [y] so the overlay stays mostly on-screen. Two prior
-     * iterations went too far in opposite directions:
+     * Clamp [x] / [y] so the overlay can be dragged to (or past) any edge
+     * of the display, while always leaving a small grab strip on-screen.
      *
-     *   1. **No clamp** — user dragged overlay behind status bar and
-     *      lost the ability to tap it.
+     * Three iterations to get here:
+     *
+     *   1. **No clamp** — overlay drifted off-screen, no way back.
      *   2. **Insets-based safe band** — used `WindowInsets.systemBars()`
-     *      to forbid the status-bar / nav-bar regions. Worked on phone
-     *      but on FYT7870 HUD the reported `insets.top` was big enough
-     *      to forbid every upward drag, so the overlay felt frozen.
+     *      to forbid the status-bar / nav-bar regions. On the FYT/SYU HUD
+     *      the reported `insets.top` was big enough that every upward drag
+     *      bounced back; overlay felt frozen.
+     *   3. **Display-bounds, fully on-screen** (`coerceIn(0, max)`).
+     *      Allowed flush-against-edge but the user couldn't push the
+     *      overlay over the top edge to overlap the status bar.
      *
-     * Current rule: clamp to the **display bounds** (current orientation)
-     * minus the view's own size. The overlay can sit flush against any
-     * edge — including under a system bar — but it can't disappear off
-     * the screen entirely. The dedicated "Reset position" button in
-     * HomeScreen is the recovery path if the user covers it with
-     * something.
+     * Current rule: allow the overlay to go past any edge as long as at
+     * least [MIN_VISIBLE_DP] of it stays inside the display rect — so a
+     * grab handle is always reachable. The status bar still renders on
+     * top of the upper strip (Android third-party security limit), but
+     * the touchable bottom edge is enough to drag it back down. The
+     * "Reset position" button in HomeScreen is the panic-recovery path.
      */
     private fun clampToSafeBand(x: Int, y: Int): Pair<Int, Int> {
         val density = resources.displayMetrics.density
@@ -189,14 +203,19 @@ class OverlayService : Service() {
         val approxH = (DEFAULT_H_DP * density).toInt()
         val viewW = view?.width?.takeIf { it > 0 } ?: approxW
         val viewH = view?.height?.takeIf { it > 0 } ?: approxH
+        val minVisible = (MIN_VISIBLE_DP * density).toInt()
 
-        // currentWindowMetrics matches the active orientation (landscape on
-        // the HUD, portrait on the phone) — maximumWindowMetrics returns
-        // the largest possible, which over-estimates on landscape devices.
+        // currentWindowMetrics.bounds INCLUDES the system bars (insets
+        // aren't subtracted — verified against Android docs). So with
+        // minY = -(viewH - minVisible) the overlay can be pushed up
+        // until only a `minVisible`-tall strip remains below the top
+        // edge of the display.
         val bounds = windowManager.currentWindowMetrics.bounds
-        val maxX = (bounds.width()  - viewW).coerceAtLeast(0)
-        val maxY = (bounds.height() - viewH).coerceAtLeast(0)
-        return x.coerceIn(0, maxX) to y.coerceIn(0, maxY)
+        val minX = -(viewW - minVisible)
+        val minY = -(viewH - minVisible)
+        val maxX = bounds.width()  - minVisible
+        val maxY = bounds.height() - minVisible
+        return x.coerceIn(minX, maxX) to y.coerceIn(minY, maxY)
     }
 
     /**
@@ -237,6 +256,11 @@ class OverlayService : Service() {
         // Rough size used for clamping before the view has been measured.
         private const val DEFAULT_W_DP = 300f
         private const val DEFAULT_H_DP = 60f
+        // Minimum strip of overlay that must remain on-screen at every
+        // edge, so the user can always grab it back even after pushing
+        // it past the top / bottom / sides. 24 dp is the Material touch
+        // target floor.
+        private const val MIN_VISIBLE_DP = 24f
     }
 }
 

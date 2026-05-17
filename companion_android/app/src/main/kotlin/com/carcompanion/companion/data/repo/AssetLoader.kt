@@ -113,20 +113,14 @@ class AssetLoader(private val context: Context) {
 
     fun loadGif(name: String): ByteArray? {
         findRecursive(externalGifRoot, name)?.let { return readSafe(it, "GIF ext") }
-        return readInternalOrAsset(
-            internalSearch = { findRecursive(gifRoot, name) },
-            assetPath = "gif_crushed/$name",
-            kind = "GIF",
-        )
+        findRecursive(gifRoot, name)?.let { return readSafe(it, "GIF int") }
+        return null
     }
 
     fun loadWav(name: String): ByteArray? {
         findRecursive(externalAudioRoot, name)?.let { return readSafe(it, "WAV ext") }
-        return readInternalOrAsset(
-            internalSearch = { findRecursive(audioRoot, name) },
-            assetPath = "wav/$name",
-            kind = "WAV",
-        )
+        findRecursive(audioRoot, name)?.let { return readSafe(it, "WAV int") }
+        return null
     }
 
     /** Flat list of every GIF name (across all pack folders). Used by Cfg manual-test dropdown. */
@@ -135,10 +129,9 @@ class AssetLoader(private val context: Context) {
             .filter { it.isFile && it.extension.equals("gif", true) }
             .map { it.name }.distinct().sorted().toList() else emptyList()
         if (ext.isNotEmpty()) return ext
-        val internal = if (gifRoot.isDirectory) gifRoot.walkTopDown()
+        return if (gifRoot.isDirectory) gifRoot.walkTopDown()
             .filter { it.isFile && it.extension.equals("gif", true) }
             .map { it.name }.distinct().sorted().toList() else emptyList()
-        return internal.takeIf { it.isNotEmpty() } ?: listBundled("gif_crushed", ".gif")
     }
 
     /** Flat list of every WAV name (across all event folders). Used by Cfg manual-test dropdown. */
@@ -147,10 +140,9 @@ class AssetLoader(private val context: Context) {
             .filter { it.isFile && it.extension.equals("wav", true) }
             .map { it.name }.distinct().sorted().toList() else emptyList()
         if (ext.isNotEmpty()) return ext
-        val internal = if (audioRoot.isDirectory) audioRoot.walkTopDown()
+        return if (audioRoot.isDirectory) audioRoot.walkTopDown()
             .filter { it.isFile && it.extension.equals("wav", true) }
             .map { it.name }.distinct().sorted().toList() else emptyList()
-        return internal.takeIf { it.isNotEmpty() } ?: listBundled("wav", ".wav")
     }
 
     // ── Internal helpers
@@ -163,34 +155,6 @@ class AssetLoader(private val context: Context) {
         file.readBytes()
     } catch (e: IOException) {
         Log.w(TAG, "$label read ${file.name} failed: ${e.message}")
-        null
-    }
-
-    private fun readInternalOrAsset(
-        internalSearch: () -> File?,
-        assetPath: String,
-        kind: String,
-    ): ByteArray? {
-        internalSearch()?.let { f ->
-            return readSafe(f, kind)
-        }
-        return readBundled(assetPath, kind)
-    }
-
-    private fun listBundled(dir: String, extension: String): List<String> = try {
-        context.assets.list(dir)
-            ?.filter { it.endsWith(extension, ignoreCase = true) }
-            ?.sorted()
-            ?: emptyList()
-    } catch (e: IOException) {
-        Log.w(TAG, "bundled list $dir failed: ${e.message}")
-        emptyList()
-    }
-
-    private fun readBundled(path: String, kind: String): ByteArray? = try {
-        context.assets.open(path).use { it.readBytes() }
-    } catch (e: IOException) {
-        Log.d(TAG, "$kind asset missing: $path")
         null
     }
 

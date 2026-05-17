@@ -315,21 +315,34 @@ class CarCompanionService : LifecycleService() {
         /**
          * Step volume one notch.
          *
-         * Why not `adjustStreamVolume(STREAM_MUSIC, ADJUST_RAISE)`? On Chinese
-         * head-unit ROMs (SYU / XYAuto / FYT class, identified by the
-         * presence of `com.syu.ms`), STREAM_MUSIC is force-held at max
-         * because the actual amp lives outside Android — ROM listens for
-         * `KEYCODE_VOLUME_UP/DOWN/MUTE` at the InputDispatcher level and
-         * forwards them to the amp module. `adjustStreamVolume` never gets
-         * there because the stream is already at max.
+         * Two-stage strategy:
          *
-         * `dispatchMediaKeyEvent` is the public-API equivalent that re-enters
-         * the same system path as `adb shell input keyevent` (verified on
-         * the target HUD — amp value 5 → 8 on three consecutive `VOLUME_UP`
-         * dispatches), so it works on the SYU ROM AND falls back to normal
-         * stream-volume behaviour on stock Android.
+         *   1. **Shizuku path** (if installed + permission granted) — runs
+         *      `input keyevent KEYCODE_VOLUME_UP/DOWN` via the Shizuku
+         *      service. This goes through the same path as
+         *      `adb shell input keyevent`, which is the path Chinese HUD
+         *      ROMs (SYU / XYAuto / FYT class — `com.syu.ms`) hook at the
+         *      InputDispatcher level to drive the external amp module.
+         *      Verified on the target HUD: amp value steps 5 → 6 → 7 → 8
+         *      on three consecutive VOLUME_UP dispatches.
+         *
+         *   2. **AudioManager fallback** — `dispatchMediaKeyEvent` goes
+         *      through MediaSessionService which the SYU ROM does NOT
+         *      hook, so this won't move the HUD amp. It still works on
+         *      stock Android where there's no external amp, so we keep it
+         *      so the app stays useful on a phone install.
+         *
+         * Why not `adjustStreamVolume`? On SYU HUDs STREAM_MUSIC is
+         * force-held at max (the ROM rewrites it every 11 s) so
+         * adjustStreamVolume(ADJUST_RAISE) becomes a no-op.
          */
         fun bumpVolume(delta: Int) {
+            val key = if (delta >= 0) "KEYCODE_VOLUME_UP" else "KEYCODE_VOLUME_DOWN"
+            if (ShizukuVolumeController.sendKey(key)) {
+                // Shizuku owns the side-effect; nothing more to do.
+                refreshOverlayFromStream()
+                return
+            }
             val am = audioManagerRef ?: return
             val keycode = if (delta >= 0) KeyEvent.KEYCODE_VOLUME_UP
                           else KeyEvent.KEYCODE_VOLUME_DOWN
@@ -339,11 +352,13 @@ class CarCompanionService : LifecycleService() {
         }
 
         /**
-         * Toggle mute. Same reasoning as [bumpVolume] — on SYU ROMs the
-         * amp module is what mutes; on stock Android the system handles
-         * KEYCODE_VOLUME_MUTE the conventional way.
+         * Toggle mute. Same Shizuku-first strategy as [bumpVolume].
          */
         fun toggleMute() {
+            if (ShizukuVolumeController.sendKey("KEYCODE_VOLUME_MUTE")) {
+                refreshOverlayFromStream()
+                return
+            }
             val am = audioManagerRef ?: return
             am.dispatchMediaKeyEvent(
                 KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE)
@@ -475,6 +490,12 @@ class CarCompanionService : LifecycleService() {
         ccpClientRef = CompanionCcpClient()
         serviceScope = lifecycleScope
         audioManagerRef = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        // Start binding the Shizuku user service now so the binder is hot
+        // by the time the user taps a volume button on the overlay. If
+        // Shizuku isn't installed/permitted this is a no-op and the
+        // overlay falls back to AudioManager.dispatchMediaKeyEvent.
+        ShizukuVolumeController.warmUp(applicationContext)
+        appendLog("Shizuku status: ${ShizukuVolumeController.status()}")
         // Seed overlay volume from the current Android stream so the UI
         // matches the system at startup.
         audioManagerRef?.let { am ->

@@ -16,6 +16,13 @@
          and AOSP devices without GMS still expose this provider. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- Shizuku — user grants this through the Shizuku Manager app once,
+         lets us run shell-level commands (input keyevent VOLUME_UP/DOWN/MUTE)
+         that the Chinese HUD ROM hooks at the InputDispatcher level.
+         Optional: app degrades gracefully to AudioManager when Shizuku
+         is unavailable or the permission hasn't been granted. -->
+    <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
+
     <application
         android:name=".CarCompanionApp"
         android:label="@string/app_name"
@@ -77,6 +84,19 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <!-- Shizuku provider. The library declares its own ShizukuProvider
+             with a different authority; we override the authority here so
+             it's unique to our package and doesn't clash if the user has
+             other Shizuku-enabled apps installed. -->
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:multiprocess="false"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL"
+            tools:replace="android:authorities" />
 
     </application>
 

@@ -50,6 +50,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        aidl = true
     }
 
     sourceSets {
@@ -91,6 +92,16 @@ dependencies {
 
     // Charts for SoulDebugActivity (Vico — Compose Material 3 module)
     implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.28")
+
+    // Shizuku — gives us shell-level access (UID 2000) without root, so we
+    // can inject KEYCODE_VOLUME_UP/DOWN/MUTE that the Chinese HUD ROM
+    // (com.syu.ms) intercepts at the InputDispatcher level. AudioManager's
+    // dispatchMediaKeyEvent goes through MediaSessionService instead, which
+    // the ROM does not hook. User activates Shizuku once via the device's
+    // own wireless-debug pairing; on Android 13+ it auto-resumes on
+    // trusted wifi.
+    implementation("dev.rikka.shizuku:api:13.1.5")
+    implementation("dev.rikka.shizuku:provider:13.1.5")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 
